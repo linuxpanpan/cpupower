@@ -31,6 +31,8 @@
 #include "parse.h"
 #include "config.h"
 
+#define DEFAULT_CONFIG_FILE "./cpufreq-bench.cfg"
+
 /**
  * converts priority string to priority
  *
@@ -145,13 +147,13 @@ struct config *prepare_default_config()
 	config->cpu = 0;
 	config->prio = SCHED_HIGH;
 	config->verbose = 0;
-	strncpy(config->governor, "ondemand", 8);
+	strncpy(config->governor, "interactive", 8);
 
 	config->output = stdout;
 
 #ifdef DEFAULT_CONFIG_FILE
 	if (prepare_config(DEFAULT_CONFIG_FILE, config))
-		return NULL;
+		return config;
 #endif
 	return config;
 }
@@ -179,10 +181,13 @@ int prepare_config(const char *path, struct config *config)
 	configfile = fopen(path, "r");
 	if (configfile == NULL) {
 		perror("fopen");
-		fprintf(stderr, "error: unable to read configfile\n");
+		fprintf(stderr, "error: unable to read configfile:%s\n",DEFAULT_CONFIG_FILE);
 		free(config);
 		return 1;
 	}
+	else
+		fprintf(stdout, "read configfile:%s\n", DEFAULT_CONFIG_FILE);
+	
 
 	while (getline(&line, &len, configfile) != -1) {
 		if (line[0] == '#' || line[0] == ' ' || line[0] == '\n')

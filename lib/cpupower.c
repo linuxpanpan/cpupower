@@ -15,6 +15,7 @@
 #include "cpupower.h"
 #include "cpupower_intern.h"
 
+#if 0
 unsigned int sysfs_read_file(const char *path, char *buf, size_t buflen)
 {
 	int fd;
@@ -35,6 +36,7 @@ unsigned int sysfs_read_file(const char *path, char *buf, size_t buflen)
 
 	return (unsigned int) numread;
 }
+#endif
 
 /*
  * Detect whether a CPU is online

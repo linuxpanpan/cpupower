@@ -1,0 +1,56 @@
+
+Description
+===========
+
+cpufreq-bench helps to test the condition of a given cpufreq governor.
+For that purpose, it compares the performance governor to a configured
+powersave module.
+
+
+How it works
+============
+You can specify load (100% CPU load) and sleep (0% CPU load) times in us which
+will be run X time in a row (cycles):
+
+         sleep=25000
+         load=25000
+         cycles=20
+
+This part of the configuration file will create 25ms load/sleep turns,
+repeated 20 times.
+
+Adding this:
+         sleep_step=25000
+         load_step=25000
+         rounds=5
+Will increase load and sleep time by 25ms 5 times.
+Together you get following test:
+25ms  load/sleep time repeated 20 times (cycles).
+50ms  load/sleep time repeated 20 times (cycles).
+..
+100ms load/sleep time repeated 20 times (cycles).
+
+First it is calibrated how long a specific CPU intensive calculation
+takes on this machine and needs to be run in a loop using the performance
+governor.
+Then the above test runs are processed using the performance governor
+and the governor to test. The time the calculation really needed
+with the dynamic freq scaling governor is compared with the time needed
+on full performance and you get the overall performance loss.
+
+
+cpufreq-bench Command Usage
+===========================
+-l, --load=<long int>           initial load time in us
+-s, --sleep=<long int>          initial sleep time in us
+-x, --load-step=<long int>      time to be added to load time, in us
+-y, --sleep-step=<long int>     time to be added to sleep time, in us
+-c, --cpu=<unsigned int>        CPU Number to use, starting at 0
+-p, --prio=<priority>           scheduler priority, HIGH, LOW or DEFAULT
+-g, --governor=<governor>       cpufreq governor to test
+-n, --cycles=<int>              load/sleep cycles to get an average value to compare
+-r, --rounds<int>               load/sleep rounds
+-f, --file=<configfile>         config file to use
+-o, --output=<dir>              output dir, must exist
+-v, --verbose                   verbose output on/off
+

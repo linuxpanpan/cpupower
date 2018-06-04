@@ -28,6 +28,7 @@
 #include <cpufreq.h>
 #include <cpupower.h>
 
+#include <../lib/cpupower.h>
 #include "config.h"
 #include "system.h"
 

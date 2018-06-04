@@ -57,15 +57,15 @@ void usage()
 	printf(" -s, --sleep=<long int>\t\tinitial sleep time in us\n");
 	printf(" -x, --load-step=<long int>\ttime to be added to load time, in us\n");
 	printf(" -y, --sleep-step=<long int>\ttime to be added to sleep time, in us\n");
-	printf(" -c, --cpu=<cpu #>\t\t\tCPU Nr. to use, starting at 0\n");
-	printf(" -p, --prio=<priority>\t\t\tscheduler priority, HIGH, LOW or DEFAULT\n");
-	printf(" -g, --governor=<governor>\t\tcpufreq governor to test\n");
-	printf(" -n, --cycles=<int>\t\t\tload/sleep cycles\n");
-	printf(" -r, --rounds<int>\t\t\tload/sleep rounds\n");
-	printf(" -f, --file=<configfile>\t\tconfig file to use\n");
-	printf(" -o, --output=<dir>\t\t\toutput path. Filename will be OUTPUTPATH/benchmark_TIMESTAMP.log\n");
-	printf(" -v, --verbose\t\t\t\tverbose output on/off\n");
-	printf(" -h, --help\t\t\t\tPrint this help screen\n");
+	printf(" -c, --cpu=<cpu #>\t\tCPU Nr. to use, starting at 0\n");
+	printf(" -p, --prio=<priority>\t\tscheduler priority, HIGH, LOW or DEFAULT\n");
+	printf(" -g, --governor=<governor>\tcpufreq governor to test\n");
+	printf(" -n, --cycles=<int>\t\tload/sleep cycles\n");
+	printf(" -r, --rounds<int>\t\tload/sleep rounds\n");
+	printf(" -f, --file=<configfile>\tconfig file to use\n");
+	printf(" -o, --output=<dir>\t\toutput path. Filename will be OUTPUTPATH/benchmark_TIMESTAMP.log\n");
+	printf(" -v, --verbose\t\t\tverbose output on/off\n");
+	printf(" -h, --help\t\t\tPrint this help screen\n");
 	exit(1);
 }
 
@@ -158,11 +158,11 @@ int main(int argc, char **argv)
 		case 'h':
 		case '?':
 		default:
-			if (config != NULL) {
-				if (config->output != NULL)
-					fclose(config->output);
-				free(config);
-			}
+			//if (config != NULL) {
+			//	if (config->output != NULL)
+			//		fclose(config->output);
+			//	free(config);
+			//}
 			usage();
 		}
 	}

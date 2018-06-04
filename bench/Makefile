@@ -1,3 +1,4 @@
+STATIC = true
 OUTPUT := ./
 ifeq ("$(origin O)", "command line")
 ifneq ($(O),)
@@ -8,13 +9,13 @@ endif
 ifeq ($(strip $(STATIC)),true)
 LIBS = -L../ -L$(OUTPUT) -lm
 OBJS = $(OUTPUT)main.o $(OUTPUT)parse.o $(OUTPUT)system.o $(OUTPUT)benchmark.o \
-       $(OUTPUT)../lib/cpufreq.o $(OUTPUT)../lib/sysfs.o
+       $(OUTPUT)../lib/cpufreq.o $(OUTPUT)../lib/cpupower.o $(OUTPUT)../utils/helpers/sysfs.o
 else
 LIBS = -L../ -L$(OUTPUT) -lm -lcpupower
 OBJS = $(OUTPUT)main.o $(OUTPUT)parse.o $(OUTPUT)system.o $(OUTPUT)benchmark.o
 endif
 
-CFLAGS += -D_GNU_SOURCE -I../lib -DDEFAULT_CONFIG_FILE=\"$(confdir)/cpufreq-bench.conf\"
+CFLAGS += -D_GNU_SOURCE -I../lib
 
 $(OUTPUT)%.o : %.c
 	$(ECHO) "  CC      " $@

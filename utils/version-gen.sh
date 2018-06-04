@@ -22,10 +22,10 @@ if test -d ../../../.git -o -f ../../../.git &&
 then
 	VN=$(echo "$VN" | sed -e 's/-/./g');
 else
-	eval $(grep '^VERSION[[:space:]]*=' ../../../Makefile|tr -d ' ')
-	eval $(grep '^PATCHLEVEL[[:space:]]*=' ../../../Makefile|tr -d ' ')
-	eval $(grep '^SUBLEVEL[[:space:]]*=' ../../../Makefile|tr -d ' ')
-	eval $(grep '^EXTRAVERSION[[:space:]]*=' ../../../Makefile|tr -d ' ')
+	eval $(grep '^VERSION[[:space:]]*=' ../android_49_qemu/Makefile|tr -d ' ')
+	eval $(grep '^PATCHLEVEL[[:space:]]*=' ../android_49_qemu/Makefile|tr -d ' ')
+	eval $(grep '^SUBLEVEL[[:space:]]*=' ../android_49_qemu/Makefile|tr -d ' ')
+	eval $(grep '^EXTRAVERSION[[:space:]]*=' ../android_49_qemu/Makefile|tr -d ' ')
 
 	VN="${VERSION}.${PATCHLEVEL}.${SUBLEVEL}${EXTRAVERSION}"
 fi

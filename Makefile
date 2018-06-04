@@ -34,7 +34,7 @@ endif
 
 # Set the following to `true' to make a unstripped, unoptimized
 # binary. Leave this set to `false' for production use.
-DEBUG ?=	true
+DEBUG ?=	false
 
 # make the build silent. Set this to something else to make it noisy again.
 V ?=		false
@@ -50,7 +50,7 @@ CPUFREQ_BENCH ?= true
 # Do not build libraries, but build the code in statically
 # Libraries are still built, otherwise the Makefile code would
 # be rather ugly.
-export STATIC ?= false
+export STATIC ?= true
 
 # Prefix to the directories we're installing to
 DESTDIR ?=
@@ -95,7 +95,8 @@ INSTALL_SCRIPT = ${INSTALL_PROGRAM}
 # If you are running a cross compiler, you may want to set this
 # to something more interesting, like "arm-linux-".  If you want
 # to compile vs uClibc, that can be done here as well.
-CROSS = #/usr/i386-linux-uclibc/usr/bin/i386-uclibc-
+CROSS=arm-linux-gnueabihf-
+#CROSS = #/usr/i386-linux-uclibc/usr/bin/i386-uclibc-
 CC = $(CROSS)gcc
 LD = $(CROSS)gcc
 AR = $(CROSS)ar
@@ -201,14 +202,11 @@ $(OUTPUT)lib/%.o: $(LIB_SRC) $(LIB_HEADERS)
 	$(ECHO) "  CC      " $@
 	$(QUIET) $(CC) $(CFLAGS) -fPIC -o $@ -c lib/$*.c
 
-$(OUTPUT)libcpupower.so.$(LIB_MAJ): $(LIB_OBJS)
-	$(ECHO) "  LD      " $@
-	$(QUIET) $(CC) -shared $(CFLAGS) $(LDFLAGS) -o $@ \
-		-Wl,-soname,libcpupower.so.$(LIB_MIN) $(LIB_OBJS)
-	@ln -sf $(@F) $(OUTPUT)libcpupower.so
-	@ln -sf $(@F) $(OUTPUT)libcpupower.so.$(LIB_MIN)
+$(OUTPUT)libcpupower.a: $(LIB_OBJS)
+	$(ECHO) "  LD      " $@ from $(LIB_OBJS)--
+	$(CROSS)ar rcs $@ $<
 
-libcpupower: $(OUTPUT)libcpupower.so.$(LIB_MAJ)
+libcpupower: $(OUTPUT)libcpupower.a
 
 # Let all .o files depend on its .c file and all headers
 # Might be worth to put this into utils/Makefile at some point of time
@@ -218,12 +216,12 @@ $(OUTPUT)%.o: %.c
 	$(ECHO) "  CC      " $@
 	$(QUIET) $(CC) $(CFLAGS) -I./lib -I ./utils -o $@ -c $*.c
 
-$(OUTPUT)cpupower: $(UTIL_OBJS) $(OUTPUT)libcpupower.so.$(LIB_MAJ)
+$(OUTPUT)cpupower: $(UTIL_OBJS) $(OUTPUT)libcpupower.a
 	$(ECHO) "  CC      " $@
 ifeq ($(strip $(STATIC)),true)
-	$(QUIET) $(CC) $(CFLAGS) $(LDFLAGS) $(UTIL_OBJS) -lrt -lpci -L$(OUTPUT) -o $@
+	$(QUIET) $(CC) $(CFLAGS) $(LDFLAGS) $(UTIL_OBJS) -lrt  -L$(OUTPUT) -o $@
 else
-	$(QUIET) $(CC) $(CFLAGS) $(LDFLAGS) $(UTIL_OBJS) -lcpupower -lrt -lpci -L$(OUTPUT) -o $@
+	$(QUIET) $(CC) $(CFLAGS) $(LDFLAGS) $(UTIL_OBJS) -lcpupower -lrt  -L$(OUTPUT) -o $@
 endif
 	$(QUIET) $(STRIPCMD) $@
 
@@ -251,7 +249,7 @@ update-po: $(OUTPUT)po/$(PACKAGE).pot
 		fi; \
 	done;
 
-compile-bench: $(OUTPUT)libcpupower.so.$(LIB_MAJ)
+compile-bench: $(OUTPUT)libcpupower.a
 	@V=$(V) confdir=$(confdir) $(MAKE) -C bench O=$(OUTPUT)
 
 # we compile into subdirectories. if the target directory is not the
@@ -269,7 +267,7 @@ clean:
 	-find $(OUTPUT) \( -not -type d \) -and \( -name '*~' -o -name '*.[oas]' \) -type f -print \
 	 | xargs rm -f
 	-rm -f $(OUTPUT)cpupower
-	-rm -f $(OUTPUT)libcpupower.so*
+	-rm -f $(OUTPUT)libcpupower.a
 	-rm -rf $(OUTPUT)po/*.gmo
 	-rm -rf $(OUTPUT)po/*.pot
 	$(MAKE) -C bench O=$(OUTPUT) clean
@@ -277,7 +275,7 @@ clean:
 
 install-lib:
 	$(INSTALL) -d $(DESTDIR)${libdir}
-	$(CP) $(OUTPUT)libcpupower.so* $(DESTDIR)${libdir}/
+	$(CP) $(OUTPUT)libcpupower.a $(DESTDIR)${libdir}/
 	$(INSTALL) -d $(DESTDIR)${includedir}
 	$(INSTALL_DATA) lib/cpufreq.h $(DESTDIR)${includedir}/cpufreq.h
 	$(INSTALL_DATA) lib/cpuidle.h $(DESTDIR)${includedir}/cpuidle.h
